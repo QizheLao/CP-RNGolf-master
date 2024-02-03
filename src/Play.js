@@ -23,6 +23,12 @@ class Play extends Phaser.Scene {
         // add background grass
         this.grass = this.add.image(0, 0, 'grass').setOrigin(0)
 
+        this.shots = 0
+        this.score = 0
+        this.scoreText = this.add.text(0, 0, 'Score: 0', { fontSize: '30px', fill: '#FFFFFF' })
+        this.shotText = this.add.text(0, 30, 'Shots: 0', { fontSize: '30px', fill: '#FFFFFF' })
+        this.successRateText = this.add.text(250, 0, 'Success Rate: 0%', { fontSize: '30px', fill: '#FFFFFF' })
+
         // add cup
         this.cup = this.physics.add.sprite(width / 2, height / 10, 'cup')
         this.cup.body.setCircle(this.cup.width / 4)
@@ -55,25 +61,19 @@ class Play extends Phaser.Scene {
 
         // add pointer input
         this.input.on('pointerdown', (pointer) => {
-            let shotDirectionY = pointer.y <= this.ball.y ? 1 : -1; // Determines the shot's Y-direction
-            let deltaX = pointer.x - this.ball.x; // Difference in X between pointer and ball
-            let shotDirectionX = deltaX / Math.abs(deltaX); // Normalizes to -1 (left) or 1 (right)
-            
-            // Set velocity based on pointer position, maintaining shot power
-            this.ball.body.setVelocityX(shotDirectionX * this.SHOT_VELOCITY_X);
-            this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MAX) * shotDirectionY);
-        });
-
-        // this.input.on('pointerdown', (pointer) => {
-        //     let shotDirection = pointer.y <=this.ball.y? 1 : -1
-        //     this.ball.body.setVelocityX(Phaser.Math.Between(-this.SHOT_VELOCITY_X, this.SHOT_VELOCITY_X))
-        //     this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MIN) * shotDirection)
-        // }) 
+            let shotDirection = pointer.y <=this.ball.y? 1 : -1
+            this.ball.body.setVelocityX(Phaser.Math.Between(-this.SHOT_VELOCITY_X, this.SHOT_VELOCITY_X))
+            this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MIN) * shotDirection)
+            this.shots++
+        }) 
 
         // cup/ball collision
         this.physics.add.collider(this.ball, this.cup, (ball, cup) => {
-            ball.destroy()
-            this.ball = this.physics.add.sprite(width / 2, height - height / 8, 'ball')
+            // ball.destroy()
+            this.score++;
+            console.log(this.score)
+            this.ball.setPosition(width / 2, height - height / 8)
+            this.ball.body.setVelocity(0, 0)
         })
 
         // ball/wall collision
@@ -81,11 +81,14 @@ class Play extends Phaser.Scene {
 
         // ball/one-way collision
         this.physics.add.collider(this.ball, this.oneWay)
-        
+
     }
 
     update() {
-
+        this.scoreText.setText('Score: ' + this.score)
+        this.shotText.setText('Shots: ' + this.shots)
+        let successRate = Math.round((this.score / this.shots) * 100)
+        this.successRateText.setText('Success Rate: ' + successRate + '%')
     }
 }
 /*
