@@ -25,7 +25,7 @@ class Play extends Phaser.Scene {
 
         this.shots = 0
         this.score = 0
-        this.scoreText = this.add.text(0, 0, 'Score: 0', { fontSize: '30px', fill: '#FFFFFF' })
+        this.scoreText = this.add.text(0, 0, 'hole-in: 0', { fontSize: '30px', fill: '#FFFFFF' })
         this.shotText = this.add.text(0, 30, 'Shots: 0', { fontSize: '30px', fill: '#FFFFFF' })
         this.successRateText = this.add.text(250, 0, 'Success Rate: 0%', { fontSize: '30px', fill: '#FFFFFF' })
 
@@ -85,7 +85,7 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.scoreText.setText('Score: ' + this.score)
+        this.scoreText.setText('hole-in: ' + this.score)
         this.shotText.setText('Shots: ' + this.shots)
         let successRate = Math.round((this.score / this.shots) * 100)
         this.successRateText.setText('Success Rate: ' + successRate + '%')
